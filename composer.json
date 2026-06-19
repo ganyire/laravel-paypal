@@ -2,6 +2,7 @@
 	"name": "leonardganyire/paypal",
 	"description": "Paypal integration for Laravel",
 	"type": "library",
+	"version": "1.0.0",
 	"keywords": [
 		"laravel",
 		"paypal",
