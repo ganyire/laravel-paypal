@@ -2,7 +2,6 @@
 	"name": "leonardganyire/paypal",
 	"description": "Paypal integration for Laravel",
 	"type": "library",
-	"version": "1.0.1",
 	"keywords": [
 		"laravel",
 		"paypal",
@@ -14,9 +13,14 @@
 	"authors": [
 		{
 			"name": "Leonard Ganyire",
-			"email": "ganyirel@gmail.com"
+			"email": "ganyirel@gmail.com",
+			"role": "Developer"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/ganyire/laravel-paypal/issues",
+		"email": "ganyirel@gmail.com"
+	},
 	"require": {
 		"php": "^8.3",
 		"illuminate/cache": "^11.0|^12.0|^13.0",
