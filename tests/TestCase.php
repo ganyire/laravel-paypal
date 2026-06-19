@@ -2,13 +2,14 @@
 
 namespace LeonardGanyire\Paypal\Tests;
 
+use Illuminate\Foundation\Application;
 use LeonardGanyire\Paypal\PayPalServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      * @return array<int, class-string>
      */
     protected function getPackageProviders($app): array
@@ -19,7 +20,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      */
     protected function defineEnvironment($app): void
     {

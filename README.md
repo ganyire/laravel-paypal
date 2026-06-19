@@ -35,6 +35,7 @@ PAYPAL_WEBHOOK_ID=your-webhook-id
 # PAYPAL_CONNECT_TIMEOUT=4
 # PAYPAL_ACCESS_TOKEN_CACHE_KEY=paypal.access_token
 # PAYPAL_ACCESS_TOKEN_TTL=50
+# PAYPAL_ACCESS_TOKEN_LEEWAY=60
 ```
 
 | Variable | Description |
@@ -45,7 +46,7 @@ PAYPAL_WEBHOOK_ID=your-webhook-id
 | `PAYPAL_WEBHOOK_ID` | Webhook ID from the PayPal Developer Dashboard. Required for webhook verification. |
 | `PAYPAL_BASE_URL` | Explicit API base URL. If empty, resolved from `PAYPAL_MODE` (`https://api-m.sandbox.paypal.com` or `https://api-m.paypal.com`). |
 
-Access tokens are cached automatically (default TTL: 50 minutes) and cleared on 401 responses.
+Access tokens are cached automatically and cleared on 401 responses. The cache lifetime follows PayPal's reported `expires_in` value (typically several hours) minus `PAYPAL_ACCESS_TOKEN_LEEWAY` seconds, so the token is refreshed just before it expires and authentication round-trips are kept to a minimum. `PAYPAL_ACCESS_TOKEN_TTL` (in minutes) is used only as a fallback when PayPal omits `expires_in`.
 
 ## Usage
 

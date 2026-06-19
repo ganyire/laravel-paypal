@@ -82,6 +82,85 @@ it('caches the access token', function () {
     Http::assertSentCount(3);
 });
 
+it('caches the access token for the lifetime reported by paypal', function () {
+    configurePayPal();
+
+    Http::fake([
+        'api-m.sandbox.paypal.com/v1/oauth2/token' => Http::response([
+            'access_token' => 'test-token',
+            'expires_in' => 120,
+        ], 200),
+        'api-m.sandbox.paypal.com/v2/checkout/orders' => Http::response([
+            'id' => 'PAYPAL-ORDER-1',
+            'links' => [],
+        ], 201),
+    ]);
+
+    $client = app(PayPalClient::class);
+
+    $client->createOrder(['intent' => 'CAPTURE']);
+
+    $this->travel(3)->minutes();
+
+    $client->createOrder(['intent' => 'CAPTURE']);
+
+    // expires_in (120s) minus the 60s leeway means the token expires after ~60s,
+    // so the second call re-authenticates: 2 token + 2 order requests.
+    Http::assertSentCount(4);
+});
+
+it('does not re-authenticate within the reported token lifetime', function () {
+    configurePayPal();
+
+    Http::fake([
+        'api-m.sandbox.paypal.com/v1/oauth2/token' => Http::response([
+            'access_token' => 'test-token',
+            'expires_in' => 32400,
+        ], 200),
+        'api-m.sandbox.paypal.com/v2/checkout/orders' => Http::response([
+            'id' => 'PAYPAL-ORDER-1',
+            'links' => [],
+        ], 201),
+    ]);
+
+    $client = app(PayPalClient::class);
+
+    $client->createOrder(['intent' => 'CAPTURE']);
+
+    $this->travel(50)->minutes();
+
+    $client->createOrder(['intent' => 'CAPTURE']);
+
+    // The long-lived token is still valid, so only 1 token request is made: 1 token + 2 orders.
+    Http::assertSentCount(3);
+});
+
+it('falls back to the configured ttl when paypal omits expires_in', function () {
+    configurePayPal();
+    config(['paypal.access_token_ttl' => 1]);
+
+    Http::fake([
+        'api-m.sandbox.paypal.com/v1/oauth2/token' => Http::response([
+            'access_token' => 'test-token',
+        ], 200),
+        'api-m.sandbox.paypal.com/v2/checkout/orders' => Http::response([
+            'id' => 'PAYPAL-ORDER-1',
+            'links' => [],
+        ], 201),
+    ]);
+
+    $client = app(PayPalClient::class);
+
+    $client->createOrder(['intent' => 'CAPTURE']);
+
+    $this->travel(2)->minutes();
+
+    $client->createOrder(['intent' => 'CAPTURE']);
+
+    // Fallback TTL of 1 minute has elapsed, so the token is re-fetched.
+    Http::assertSentCount(4);
+});
+
 it('forgets cached token on 401 responses', function () {
     configurePayPal();
 
