@@ -6,7 +6,6 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use LeonardGanyire\Paypal\Enums\PayPalOrderStatus;
 use LeonardGanyire\Paypal\Exceptions\PayPalException;
 use Throwable;
 
