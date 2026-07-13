@@ -1,5 +1,4 @@
 <?php
-
 namespace LeonardGanyire\Paypal;
 
 use Illuminate\Http\Client\ConnectionException;
@@ -140,13 +139,13 @@ final class PayPalClient
         $response = $this->authenticatedRequest()->post(
             $this->endpoint('/v1/notifications/verify-webhook-signature'),
             [
-                'auth_algo' => $headers['paypal-auth-algo'] ?? null,
-                'cert_url' => $headers['paypal-cert-url'] ?? null,
-                'transmission_id' => $headers['paypal-transmission-id'] ?? null,
-                'transmission_sig' => $headers['paypal-transmission-sig'] ?? null,
+                'auth_algo'         => $headers['paypal-auth-algo'] ?? null,
+                'cert_url'          => $headers['paypal-cert-url'] ?? null,
+                'transmission_id'   => $headers['paypal-transmission-id'] ?? null,
+                'transmission_sig'  => $headers['paypal-transmission-sig'] ?? null,
                 'transmission_time' => $headers['paypal-transmission-time'] ?? null,
-                'webhook_id' => $webhookId,
-                'webhook_event' => $payload,
+                'webhook_id'        => $webhookId,
+                'webhook_event'     => $payload,
             ],
         );
 
@@ -308,7 +307,7 @@ final class PayPalClient
             );
         }
 
-        return rtrim($base, '/').$path;
+        return rtrim($base, '/') . $path;
     }
 
     /**
@@ -326,7 +325,7 @@ final class PayPalClient
         $mode = config('paypal.mode', 'sandbox');
 
         return match ($mode) {
-            'live' => 'https://api-m.paypal.com',
+            'live'  => 'https://api-m.paypal.com',
             default => 'https://api-m.sandbox.paypal.com',
         };
     }
@@ -380,7 +379,7 @@ final class PayPalClient
             throw PayPalException::requestFailed(
                 message: 'PayPal is not configured. Add PayPal credentials before making requests.',
                 details: [
-                    'client_id_configured' => filled(config('paypal.client_id')),
+                    'client_id_configured'     => filled(config('paypal.client_id')),
                     'client_secret_configured' => filled(config('paypal.client_secret')),
                 ],
             );
@@ -395,7 +394,7 @@ final class PayPalClient
      */
     private function safeFailureDetails(Response $response): array
     {
-        $body = $response->json();
+        $body    = $response->json();
         $details = [
             'status' => $response->status(),
         ];
